@@ -1,0 +1,57 @@
+<?php
+$items = $this->getData('items');
+?>
+
+<h1>List view</h1>
+<a class="btn btn-primary" href="#" role="button">Create</a>
+<?php if ($items && !empty($items)): ?>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Vehicle Type</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($items as $item): ?>
+    <tr>
+        <th scope="row"><?= $item->getId(); ?></th>
+        <td><?= $item->getName(); ?></td>
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton<?= $item->getId(); ?>"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/vehicle/view/<?= $item->getId(); ?>">View</a>
+                    <a class="dropdown-item" href="/vehicle/<?= $item->getId(); ?>">Edit</a>
+                    <a class="dropdown-item-delete" data-method="delete" href="/vehicle/<?= $item->getId(); ?>">Delete</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?php else: ?>
+    <p>No items</p>
+<?php endif; ?>
+<script>
+    $(document).on('click', 'a.dropdown-item-delete', function(e) {
+        e.preventDefault(); // does not go through with the link.
+
+        var $this = $(this);
+
+        $.post({
+            type: $this.data('method'),
+            url: $this.attr('href')
+        }).done(function (data) {
+            alert('Deleted successfully!');
+            console.log(data);
+        });
+    });
+</script>
