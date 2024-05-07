@@ -6,12 +6,7 @@ error_reporting(E_ALL);
 require 'vendor/autoload.php';
 require 'etc/config.php';
 
-use Vstore\Router\ConfigProvider;
 use Vstore\Router\Router;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Vstore\Router\Model\AbstractConnect;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 $router = new Router([
     'paths' => [
@@ -40,14 +35,14 @@ $router->post('/account/register', 'Account@registerPostAction');
 $router->any('/account/logout', 'Account@logoutAction');
 
 $router->get('/vehicle/list', 'Vehicle@listAction');
-$router->get('/vehicle/create', 'Vehicle@createViewAction');
-$router->post('/vehicle/create', 'Vehicle@createAction');
-
-$router->get('/vehicle/view/:id', 'Vehicle@viewAction');
-$router->get('/vehicle/:id', 'Vehicle@editViewAction');
-$router->post('/vehicle/:id', 'Vehicle@updateAction');
-$router->delete('/vehicle/:id', 'Vehicle@deleteAction');
+$router->get('/vehicle/:id', 'Vehicle@viewAction');
+$router->get('/vehicle/edit/:id', 'Vehicle@editAction');
+$router->get('/vehicle/create', 'Vehicle@createAction');
 
 
+$router->post('/vehicle/save', 'Vehicle@saveAction');
+$router->post('/vehicle/save/:id', 'Vehicle@updateAction'); //used this one because html form not recognized put
+
+$router->delete('/vehicle/delete/:id', 'Vehicle@deleteAction');
 
 $router->run();

@@ -1,0 +1,22 @@
+<?php
+$item = $this->getData('item');
+$action = $item->getData('id') ? "/vehicle/save/{$item->getData('id')}" : '/vehicle/save';
+$value = '';
+
+if ($item->getData('name')) {
+    $value = $item->getData('name');
+}
+
+?>
+
+<form method="post" action="<?= $action?>">
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Vehicle Type</label>
+        <input type="text"
+               name="type"
+               class="form-control"
+               id="exampleFormControlInput1"
+               value="<?= $value?>">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

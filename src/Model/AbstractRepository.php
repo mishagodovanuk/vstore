@@ -39,6 +39,7 @@ abstract class AbstractRepository extends AbstractConnect
     public function save($model): AbstractModel | false
     {
         $data = $model->getData();
+        unset($data['id']);
         $fields = implode(',', array_keys($data));
         $values = implode("','", array_values($data));
 
@@ -59,17 +60,31 @@ abstract class AbstractRepository extends AbstractConnect
         return $model;
     }
 
-    /**
-     * @param $model
-     * @return void
-     */
-    protected function update($model)
+    public function update($model): AbstractModel | false
     {
+        $data = $model->getData();
+        $id = $data['id'];
+
+        unset($data['id']);
+        $setValues = [];
+
+        foreach ($data as $key => $value) {
+            $setValues[] = "$key = '$value'";
+        }
+
+        $setValuesStr = implode(',', $setValues);
+
         $this->startTransaction();
 
-        //TODO implement update method
+        try {
+            $this->getConnect()->query("UPDATE " . $this->getInstance()::TABLE_NAME . " SET $setValuesStr WHERE id = '$id'");
+        } catch (\Exception $e) {
+            $this->rollbackTransaction();
+        }
 
         $this->endTransaction();
+
+        return $model;
     }
 
     /**

@@ -3,7 +3,7 @@ $items = $this->getData('items');
 ?>
 
 <h1>List view</h1>
-<a class="btn btn-primary" href="#" role="button">Create</a>
+<a style="max-width: 300px" class="btn btn-primary" href="/vehicle/create" role="button">Create</a>
 <?php if ($items && !empty($items)): ?>
 <table class="table">
     <thead>
@@ -27,9 +27,14 @@ $items = $this->getData('items');
                     Action
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="/vehicle/view/<?= $item->getId(); ?>">View</a>
-                    <a class="dropdown-item" href="/vehicle/<?= $item->getId(); ?>">Edit</a>
-                    <a class="dropdown-item-delete" data-method="delete" href="/vehicle/<?= $item->getId(); ?>">Delete</a>
+                    <a class="dropdown-item" href="/vehicle/<?= $item->getId(); ?>">View</a>
+                    <a class="dropdown-item" href="/vehicle/edit/<?= $item->getId(); ?>">Edit</a>
+                    <a id="<?= $item->getId();?>"
+                       class="dropdown-item delete"
+                       method="delete"
+                       href="/vehicle/delete/<?= $item->getId(); ?>">
+                        Delete
+                    </a>
                 </div>
             </div>
         </td>
@@ -41,17 +46,26 @@ $items = $this->getData('items');
     <p>No items</p>
 <?php endif; ?>
 <script>
-    $(document).on('click', 'a.dropdown-item-delete', function(e) {
-        e.preventDefault(); // does not go through with the link.
+    $(document).ready(function() {
+        $('.dropdown-item.delete').click(function(e) {
+            e.preventDefault();
+            var itemId = $(this).attr('id');
+            var confirmation = confirm('Are you sure you want to delete this item?');
 
-        var $this = $(this);
+            if (confirmation) {
+                $.ajax({
+                    url: '/vehicle/delete/' + itemId,
+                    type: 'DELETE',
+                    success: function(response) {
+                        location.reload();
+                        console.log('Item deleted successfully');
 
-        $.post({
-            type: $this.data('method'),
-            url: $this.attr('href')
-        }).done(function (data) {
-            alert('Deleted successfully!');
-            console.log(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error deleting item:', error);
+                    }
+                });
+            }
         });
     });
 </script>
