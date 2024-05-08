@@ -4,7 +4,7 @@ $config = [
     'db' => [
         'host' => 'localhost',
         'username' => 'mihod',
-        'password' => 'Callofduty1997#',
+        'password' => 'pass',
         'database' => 'vstore',
     ]
 ];
