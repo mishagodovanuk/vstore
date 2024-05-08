@@ -13,14 +13,14 @@ abstract class AbstractConnect
 {
 
     /**
-     * @var \PDO|null
+     * @var
      */
-    protected \PDO|null $connect;
+    protected $connect;
 
     /**
-     * @return \PDO
+     * @return \PDO|null
      */
-    public function getConnect(): \PDO
+    public function getConnect(): \PDO|null
     {
         if (!$this->connect) {
             $configProvider = new ConfigProvider();

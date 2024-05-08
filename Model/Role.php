@@ -22,9 +22,9 @@ class Role extends AbstractModel
     public const PRIMARY_KEY = 'id';
 
     /**
-     * @var string
+     * @var string|int|null
      */
-    public string $id;
+    public string|int|null $id;
 
     /**
      * @var string
@@ -32,14 +32,14 @@ class Role extends AbstractModel
     public string $role;
 
     /**
-     * @var string
+     * @var string|int|null
      */
-    public string $user_id;
+    public string|int|null $user_id;
 
     /**
-     * @return array|mixed|null
+     * @return int|string|null
      */
-    public function getId(): mixed
+    public function getId(): int|string|null
     {
         return $this->getData('id');
     }
@@ -54,9 +54,9 @@ class Role extends AbstractModel
     }
 
     /**
-     * @return array|mixed|null
+     * @return string|null
      */
-    public function getRole(): mixed
+    public function getRole(): ?string
     {
         return $this->getData('role');
     }
@@ -71,9 +71,9 @@ class Role extends AbstractModel
     }
 
     /**
-     * @return array|mixed|null
+     * @return int|string
      */
-    public function getUserId(): mixed
+    public function getUserId(): int|string
     {
         return $this->getData('user_id');
     }

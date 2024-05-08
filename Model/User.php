@@ -23,9 +23,9 @@ class User extends AbstractModel implements UserInterface
     public const PRIMARY_KEY = 'id';
 
     /**
-     * @var string
+     * @var string|int
      */
-    public string $id;
+    public string|int $id;
 
     /**
      * @var string
@@ -48,9 +48,9 @@ class User extends AbstractModel implements UserInterface
     public string $role;
 
     /**
-     * @return string|null
+     * @return int|string|null
      */
-    public function getId(): ?string
+    public function getId(): int|string|null
     {
         return $this->getData('id');
     }

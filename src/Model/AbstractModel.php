@@ -59,11 +59,11 @@ abstract class AbstractModel
     }
 
     /**
-     * @param array|string $keyOrArray
+     * @param mixed $keyOrArray
      * @param mixed $value
      * @return $this
      */
-    public function setData(array|string $keyOrArray, mixed $value = null): static
+    public function setData(mixed $keyOrArray, mixed $value = null): static
     {
         if (is_array($keyOrArray) && !empty($keyOrArray)) {
             foreach ($keyOrArray as $key => $val) {

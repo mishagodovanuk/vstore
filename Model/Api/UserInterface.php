@@ -10,9 +10,9 @@ namespace Model\Api;
 interface UserInterface
 {
     /**
-     * @return string|null
+     * @return int|string|null
      */
-    public function getId(): ?string;
+    public function getId(): int|string|null;
 
     /**
      * @return string|null

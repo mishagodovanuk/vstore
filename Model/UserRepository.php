@@ -38,12 +38,12 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function getByEmail(string $email): UserInterface
     {
-        $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE email = '$email'")
+        $data = $this->getConnect()?->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE email = '$email'")
             ->fetchAll();
         $model = new $this->instance();
         $model->setData(array_shift($data));
 
-        if ($model->getData('id')) {
+        if ($model->getId()) {
             $role = $this->roleRepository->getByUserId($model->getId());
             $model->setRole($role->getData('role'));
         }
