@@ -34,6 +34,11 @@ class Router
     /** Router Version */
     const VERSION = '3.0.0';
 
+    /**
+     * @var Session
+     */
+    public Session $session;
+
     /** @var string $baseFolder Base folder of the project */
     protected string $baseFolder;
 
@@ -94,13 +99,21 @@ class Router
     /** @var array $middlewareGroups Middleware Groups */
     protected array $middlewareGroups = [];
 
+    /**
+     * @var RouterPermission
+     */
+    protected \Vstore\Router\RouterPermission $permission;
+
     /** @var RouterRequest */
     private RouterRequest $request;
 
     /** @var bool */
     private bool $debug = false;
 
-    public $session;
+    /**
+     * @var int
+     */
+    private int $routerId = 0;
 
     /**
      * Router constructor method.
@@ -141,6 +154,8 @@ class Router
 
             return $response;
         };
+
+        $this->permission = new \Vstore\Router\RouterPermission();
 
         $this->setPaths($params);
         $this->loadCache();
@@ -198,6 +213,18 @@ class Router
         } else {
             $this->addRoute($route, $method, $callback, $options);
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $permission
+     * @return $this
+     */
+    public function setPermission(string $permission): static
+    {
+        $routeId = $this->routes[0]['routerId'];
+        $this->permission->setPermission($routeId, $permission);
 
         return $this;
     }
@@ -283,7 +310,7 @@ class Router
                 if ($route === $uri) {
                     $foundRoute = true;
                     $this->runRouteMiddleware($data, 'before');
-                    $this->runRouteCommand($data['callback']);
+                    $this->runRouteCommand($data['callback'], $data);
                     $this->runRouteMiddleware($data, 'after');
                     break;
 
@@ -559,10 +586,11 @@ class Router
      * @param string $type
      *
      * @return void
+     * @throws \ReflectionException
      */
     protected function runRouteMiddleware(array $middleware, string $type): void
     {
-        $this->routerCommand()->beforeAfter($middleware[$type]);
+        $this->routerCommand()->beforeAfter($middleware[$type], $middleware['routerId']);
     }
 
     /**
@@ -602,8 +630,12 @@ class Router
     protected function routerCommand(): RouterCommand
     {
         return RouterCommand::getInstance(
-            $this->baseFolder, $this->paths, $this->namespaces,
-            $this->request(), $this->response(),
+            $this->baseFolder,
+            $this->paths,
+            $this->namespaces,
+            $this->request(),
+            $this->response(),
+            $this->permission,
             $this->getMiddlewares()
         );
     }
@@ -744,6 +776,7 @@ class Router
             ))
             : null;
         $data = [
+            'routerId' => $this->routerId++,
             'route' => $this->clearRouteName("{$groupUri}/{$uri}"),
             'method' => strtoupper($method),
             'callback' => $callback,

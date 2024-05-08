@@ -26,8 +26,8 @@ $router->get('/warehouses', 'Dashboard@warehouseAction');
 $router->get('/products', 'Dashboard@productAction');
 $router->get('/admin', 'Dashboard@adminAction');
 
-$router->get('/account/login', 'Account@loginAction');
-$router->post('/account/login', 'Account@loginPostAction');
+$router->get('/account/login', 'Account@loginAction')->setPermission('admin.view');
+$router->post('/account/login', 'Account@loginPostAction')->setPermission('admin.update');
 
 $router->get('/account/register', 'Account@registerAction');
 $router->post('/account/register', 'Account@registerPostAction');

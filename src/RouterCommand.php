@@ -4,6 +4,8 @@ namespace Vstore\Router;
 
 use Closure;
 use DI\ContainerBuilder;
+use DI\DependencyException;
+use DI\NotFoundException;
 use Exception;
 use ReflectionClass;
 use ReflectionException;
@@ -12,7 +14,11 @@ use ReflectionMethod;
 use Reflector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Vstore\Router\RouterPermission;
 
+/**
+ *
+ */
 class RouterCommand
 {
     /** @var RouterCommand Class instance variable */
@@ -33,6 +39,16 @@ class RouterCommand
     /** @var Response */
     protected Response $response;
 
+    /**
+     * @var \Vstore\Router\RouterPermission
+     */
+    protected RouterPermission $permission;
+
+    /**
+     * @var string|int
+     */
+    protected string|int $routerId;
+
     /** @var array */
     protected array $middlewares = [];
 
@@ -47,6 +63,7 @@ class RouterCommand
      * @param array $namespaces
      * @param Request $request
      * @param Response $response
+     * @param RouterPermission $permission
      * @param array $middlewares
      */
     public function __construct(
@@ -55,6 +72,7 @@ class RouterCommand
         array    $namespaces,
         Request  $request,
         Response $response,
+        RouterPermission $permission,
         array    $middlewares
     )
     {
@@ -63,6 +81,7 @@ class RouterCommand
         $this->namespaces = $namespaces;
         $this->request = $request;
         $this->response = $response;
+        $this->permission = $permission;
         $this->middlewares = $middlewares;
 
         // Execute general Middlewares
@@ -100,9 +119,10 @@ class RouterCommand
      * @param array $namespaces
      * @param Request $request
      * @param Response $response
+     * @param RouterPermission $permission
      * @param array $middlewares
      *
-     * @return RouterCommand
+     * @return RouterCommand|null
      */
     public static function getInstance(
         string   $baseFolder,
@@ -110,13 +130,19 @@ class RouterCommand
         array    $namespaces,
         Request  $request,
         Response $response,
+        RouterPermission $permission,
         array    $middlewares
     ): ?RouterCommand
     {
         if (null === self::$instance) {
             self::$instance = new static(
-                $baseFolder, $paths, $namespaces,
-                $request, $response, $middlewares
+                $baseFolder,
+                $paths,
+                $namespaces,
+                $request,
+                $response,
+                $permission,
+                $middlewares
             );
         }
 
@@ -127,11 +153,11 @@ class RouterCommand
      * Run Route Middlewares
      *
      * @param $command
-     *
+     * @param $routerId
      * @return mixed|void
-     * @throws
+     * @throws ReflectionException
      */
-    public function beforeAfter($command)
+    public function beforeAfter($command, $routerId = null)
     {
         if (empty($command)) {
             return;
@@ -141,7 +167,7 @@ class RouterCommand
 
         if (is_array($command)) {
             foreach ($command as $value) {
-                $this->beforeAfter($value);
+                $this->beforeAfter($value, $routerId);
             }
         } elseif (is_string($command)) {
             $middleware = explode(':', $command);
@@ -164,6 +190,7 @@ class RouterCommand
                 }
                 return $response;
             }
+            $info['routerId'] = $routerId;
 
             return $this->runMiddleware($command, $resolvedMiddleware, $params, $info);
         }
@@ -194,7 +221,7 @@ class RouterCommand
 
             $class = str_replace([$info['namespace'], '\\', '.'], ['', '/', '/'], $class);
 
-            $controller = $this->resolveClass($class, $info['path'], $info['namespace']);
+            $controller = $this->resolveClass($class, $info['path'], $info['namespace'], $params['routerId']);
 
             if (!$invokable && !method_exists($controller, $method)) {
                 $this->exception("{$method} method is not found in {$class} class.");
@@ -202,7 +229,7 @@ class RouterCommand
 
             if (property_exists($controller, 'middlewareBefore') && is_array($controller->middlewareBefore)) {
                 foreach ($controller->middlewareBefore as $middleware) {
-                    $this->beforeAfter($middleware);
+                    $this->beforeAfter($middleware, $params['routerId']);
                 }
             }
 
@@ -210,7 +237,7 @@ class RouterCommand
 
             if (property_exists($controller, 'middlewareAfter') && is_array($controller->middlewareAfter)) {
                 foreach ($controller->middlewareAfter as $middleware) {
-                    $this->beforeAfter($middleware);
+                    $this->beforeAfter($middleware, $params['routerId']);
                 }
             }
 
@@ -226,11 +253,13 @@ class RouterCommand
      * @param string $class
      * @param string $path
      * @param string $namespace
-     *
+     * @param string|int $routerId
      * @return object
+     * @throws DependencyException
+     * @throws NotFoundException
      * @throws Exception
      */
-    protected function resolveClass(string $class, string $path, string $namespace): object
+    protected function resolveClass(string $class, string $path, string $namespace, string|int $routerId): object
     {
         $class = str_replace([$namespace, '\\'], ['', '/'], $class);
         $file = realpath("{$path}/{$class}.php");
@@ -246,6 +275,10 @@ class RouterCommand
         }
 
         $builder = new ContainerBuilder();
+        $builder->addDefinitions([
+            RouterPermission::class => $this->permission,
+            'currentRouterId' => (string)$routerId,
+        ]);
 
         return $builder->build()->get($class);
     }
@@ -314,8 +347,10 @@ class RouterCommand
      */
     protected function runMiddleware(string $command, string $middleware, array $params, array $info)
     {
+        //TODO already contains routerId inside $info array
         $middlewareMethod = 'handle'; // For now, it's constant.
-        $controller = $this->resolveClass($middleware, $info['path'], $info['namespace']);
+
+        $controller = $this->resolveClass($middleware, $info['path'], $info['namespace'], $info['routerId']);
 
         if (in_array($command, $this->markedMiddlewares)) {
             return true;

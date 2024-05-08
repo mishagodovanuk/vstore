@@ -6,6 +6,8 @@ use Vstore\Router\Http\Middleware;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Vstore\Router\RouterPermission;
+use Psr\Container\ContainerInterface;
 
 /**
  * Used to restrict not signed users from dashboard
@@ -17,16 +19,26 @@ class RestrictNotSignMiddleware extends Middleware
      */
     private Session $session;
 
+    protected RouterPermission $routerPermission;
+
+    protected string|int $currentRouterId;
+
     /**
      * @param Session $session
      * @param Request $request
+     * @param RouterPermission $routerPermission
+     * @param ContainerInterface $container
      */
     public function __construct(
         Session $session,
-        Request $request
+        Request $request,
+        RouterPermission $routerPermission,
+        ContainerInterface $container
     ) {
         $this->session = $session;
         $this->request = $request->createFromGlobals();
+        $this->routerPermission = $routerPermission;
+        $this->currentRouterId = $container->get('currentRouterId');
     }
 
     /**
