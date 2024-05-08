@@ -2,11 +2,12 @@
 
 namespace Vstore\Router\View;
 
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Vstore\Router\View\Helper\Escaper;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- *
+ * Layout processor class.
  */
 class LayoutProccessor
 {
@@ -31,9 +32,9 @@ class LayoutProccessor
     protected Escaper $escaper;
 
     /**
-     * @var array
+     * @var FlashBagInterface
      */
-    protected $messages;
+    protected FlashBagInterface $messages;
 
     /**
      * @var array
@@ -45,23 +46,22 @@ class LayoutProccessor
      * @param Session $session
      * @param string $layout
      */
-
     public function __construct(
         Escaper $escaper,
         Session $session,
         string $layout = 'main'
     ) {
         $this->layout = $layout;
-        $this->messages = $session->getFlashBag()->all();
+        $this->messages = $session->getFlashBag();
     }
 
     /**
      * @param string $template
      * @param array $data
-     * @param null $layout
+     * @param string|null $layout
      * @return false|string
      */
-    public function render(string $template, array $data = [], string $layout = null)
+    public function render(string $template, array $data = [], string|null $layout = null): bool|string
     {
         if ($layout !== null) {
             $this->layout = $layout;
@@ -90,7 +90,7 @@ class LayoutProccessor
      * @param $title
      * @return $this
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
 
@@ -106,9 +106,9 @@ class LayoutProccessor
     }
 
     /**
-     * @return array
+     * @return FlashBagInterface
      */
-    public function getMessages(): array
+    public function getMessages() : FlashBagInterface
     {
         return $this->messages;
     }
@@ -126,7 +126,7 @@ class LayoutProccessor
      * @param $value
      * @return $this
      */
-    public function setData(array | string $dataKey, $value=null)
+    public function setData(array|string $dataKey, $value=null): static
     {
         if (is_array($dataKey) && !empty($dataKey)) {
             $this->data = array_merge($this->data, $dataKey);
@@ -144,10 +144,10 @@ class LayoutProccessor
     }
 
     /**
-     * @param $key
-     * @return array|mixed
+     * @param string|null $key
+     * @return mixed
      */
-    public function getData($key = null)
+    public function getData(string|null $key = null): mixed
     {
         if (is_string($key) && array_key_exists($key, $this->data)) {
             return $this->data[$key];
@@ -157,10 +157,10 @@ class LayoutProccessor
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return bool
      */
-    public function hasData($key): bool
+    public function hasData(string $key): bool
     {
         return array_key_exists($key, $this->data);
     }

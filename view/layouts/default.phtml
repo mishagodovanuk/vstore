@@ -26,6 +26,22 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<!--Messages section start-->
+<?php if ($errors = $this->getMessages()->get('error')): ?>
+    <div class="alert alert-danger" role="alert">
+        <?php foreach ($errors as $key => $message): ?>
+            <div><?= $message ?></div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<?php if ($success = $this->getMessages()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+        <?php foreach ($success as $key => $message): ?>
+            <div><?= $message ?></div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<!--Messages section end-->
 <!-- partial -->
         <div class="main-panel">
             <?= $this->displayBody()?>

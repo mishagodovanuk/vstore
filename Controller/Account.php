@@ -88,6 +88,7 @@ class Account extends Controller
      */
     public function loginAction(): Response | string
     {
+        $this->session->getFlashBag()->add('success', 'Invalid email or password');
         return $this->response->setContent(
             $this->layoutProccessor
                 ->setTitle('Login page')
