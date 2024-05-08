@@ -52,11 +52,11 @@ class RouterPermission
     protected array $permissions = [];
 
     /**
-     * @param string|int $route
+     * @param string|int $routeId
      * @param string $permission
      * @return void
      */
-    public function setPermission(string|int $route, string $permission): void
+    public function setPermission(string|int $routeId, string $permission): void
     {
         $parts = explode('|', $permission);
 
@@ -66,33 +66,33 @@ class RouterPermission
             $permission = $segments[1];
 
             if ($permission === 'all') {
-                $this->permissions[$route][$role] = self::ALL_PERMISSIONS;
+                $this->permissions[$routeId][$role] = self::ALL_PERMISSIONS;
             } else {
-                if (isset($this->permissions[$route][$role])) {
-                    $this->permissions[$route][$role][] = $permission;
+                if (isset($this->permissions[$routeId][$role])) {
+                    $this->permissions[$routeId][$role][] = $permission;
                 } else {
-                    $this->permissions[$route][$role] = [$permission];
+                    $this->permissions[$routeId][$role] = [$permission];
                 }
             }
         }
     }
 
     /**
-     * @param string|int $route
+     * @param string|int $routeId
      * @return bool
      */
-    public function hasPermission(string|int $route): bool
+    public function hasPermission(string|int $routeId): bool
     {
-        return isset($this->permissions[$route]);
+        return isset($this->permissions[$routeId]);
     }
 
     /**
-     * @param string|int $route
+     * @param string|int $routeId
      * @return array|null
      */
-    public function getPermission(string|int $route): ?array
+    public function getPermission(string|int $routeId): ?array
     {
-        return $this->permissions[$route] ?? null;
+        return $this->permissions[$routeId] ?? null;
     }
 
     /**
