@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vstore\Router;
 
 /**
- *
+ * Class ConfigProvider
  */
 class ConfigProvider
 {
     /**
-     * @var
+     * @var array
      */
-    protected $config;
+    protected array $config = [];
 
     /**
      * Construct inits the config array
      */
     public function __construct() {
         $configFilePath = $_SERVER['DOCUMENT_ROOT'] . '/etc/config.php';
+
         if (file_exists($configFilePath)) {
             require $configFilePath;
             $this->config['db'] = $config['db'];
@@ -26,16 +29,18 @@ class ConfigProvider
     }
 
     /**
-     * @return mixed|null
+     * @return string|null
      */
-    public function getBasePath() {
+    public function getBasePath(): ?string
+    {
         return $this->config['base_path'] ?? null;
     }
 
     /**
-     * @return mixed|null
+     * @return array|null
      */
-    public function getDatabaseConfig() {
+    public function getDatabaseConfig(): ?array
+    {
         return $this->config['db'] ?? null;
     }
 }

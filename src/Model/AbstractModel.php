@@ -1,24 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vstore\Router\Model;
 
+/**
+ * Class AbstractModel
+ */
 abstract class AbstractModel
 {
+    /**
+     * Used to store the table name
+     *
+     * @var string
+     */
     public const TABLE_NAME = '';
 
+    /**
+     * Used to store the primary key
+     */
     public const PRIMARY_KEY = '';
 
+    /**
+     * @return string
+     */
     public function getTable(): string
     {
         return static::TABLE_NAME;
     }
 
+    /**
+     * @return string
+     */
     public function getPrimaryKey(): string
     {
         return static::PRIMARY_KEY;
     }
 
-    public function getData($key = null)
+    /**
+     * @param string|null $key
+     * @return array|mixed|null
+     */
+    public function getData(string|null $key = null): mixed
     {
         $classProps = get_class_vars(__CLASS__);
         $instanceProps = get_object_vars($this);
@@ -35,7 +58,12 @@ abstract class AbstractModel
         return $data;
     }
 
-    public function setData($keyOrArray, $value = null)
+    /**
+     * @param array|string $keyOrArray
+     * @param mixed $value
+     * @return $this
+     */
+    public function setData(array|string $keyOrArray, mixed $value = null): static
     {
         if (is_array($keyOrArray) && !empty($keyOrArray)) {
             foreach ($keyOrArray as $key => $val) {
@@ -52,7 +80,11 @@ abstract class AbstractModel
         return $this;
     }
 
-    public function deleteData($key = null)
+    /**
+     * @param string|null $key
+     * @return $this
+     */
+    public function deleteData(string|null $key = null): static
     {
         if ($key === null) {
             foreach (get_object_vars($this) as $prop => $val) {

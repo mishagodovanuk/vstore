@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
 use Middlewares\RestrictNotSignMiddleware;
@@ -88,7 +90,6 @@ class Account extends Controller
      */
     public function loginAction(): Response | string
     {
-        $this->session->getFlashBag()->add('success', 'Invalid email or password');
         return $this->response->setContent(
             $this->layoutProccessor
                 ->setTitle('Login page')
@@ -163,10 +164,10 @@ class Account extends Controller
             $errors++;
         }
         if (!$this->validator->isValidPassword($password)) {
-//            $this->session->getFlashBag()->add(
-//                'error',
-//                'Invalid password, Requires at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character'
-//            );
+            $this->session->getFlashBag()->add(
+                'error',
+                'Invalid password, Requires at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character'
+            );
 //            $errors++;
         }
 

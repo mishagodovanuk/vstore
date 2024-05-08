@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Vstore\Router\Http\Controller;
-use Vstore\Router\View\LayoutProccessor;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Model\Vehicle as VehicleModel;
+use Model\VehicleRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Model\VehicleRepository;
-use Model\Vehicle as VehicleModel;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Vstore\Router\Http\Controller;
+use Vstore\Router\View\LayoutProccessor;
 
 /**
- *
+ *  Vehicle controller.
  */
 class Vehicle extends Controller
 {
@@ -80,10 +82,10 @@ class Vehicle extends Controller
     }
 
     /**
-     * @param $id
+     * @param mixed $id
      * @return Response|RedirectResponse
      */
-    public function viewAction($id): Response | RedirectResponse
+    public function viewAction(mixed $id): Response | RedirectResponse
     {
         if (!$id) {
             return new RedirectResponse('/vehicle/list');
@@ -108,10 +110,10 @@ class Vehicle extends Controller
     }
 
     /**
-     * @param $id
+     * @param mixed $id
      * @return bool
      */
-    public function deleteAction($id): bool
+    public function deleteAction(mixed $id): bool
     {
         try {
             $this->vehicleRepository->deleteById($id);
@@ -121,14 +123,16 @@ class Vehicle extends Controller
             return false;
         }
 
+        $this->session->getFlashBag()->add('success', 'Vehicle deleted');
+
         return true;
     }
 
     /**
-     * @param $id
+     * @param mixed $id
      * @return Response|RedirectResponse
      */
-    public function editAction($id): Response | RedirectResponse
+    public function editAction(mixed $id): Response | RedirectResponse
     {
         $item = null;
 
@@ -201,7 +205,9 @@ class Vehicle extends Controller
             $model->setName($type);
 
             try {
-                $this->vehicleRepository->update($model);
+                if ($this->vehicleRepository->update($model)) {
+                    $this->session->getFlashBag()->add('success', 'Vehicle updated');
+                };
             } catch (\Exception $e) {
                 $this->session->getFlashBag()->add('error', 'Vehicle not updated');
             }
@@ -210,6 +216,9 @@ class Vehicle extends Controller
         return new RedirectResponse($this->request->headers->get('referer'));
     }
 
+    /**
+     * @return array|bool
+     */
     private function getSessionUser() : array | bool
     {
         $result = false;

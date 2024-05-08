@@ -61,8 +61,11 @@ class LayoutProccessor
      * @param string|null $layout
      * @return false|string
      */
-    public function render(string $template, array $data = [], string|null $layout = null): bool|string
-    {
+    public function render(
+        string $template,
+        array $data = [],
+        string|null $layout = null
+    ): bool|string {
         if ($layout !== null) {
             $this->layout = $layout;
         }
@@ -79,15 +82,7 @@ class LayoutProccessor
     }
 
     /**
-     * @return Escaper
-     */
-    protected function getEscaper(): Escaper
-    {
-        return $this->escaper;
-    }
-
-    /**
-     * @param $title
+     * @param string $title
      * @return $this
      */
     public function setTitle(string $title): static
@@ -111,14 +106,6 @@ class LayoutProccessor
     public function getMessages() : FlashBagInterface
     {
         return $this->messages;
-    }
-
-    /**
-     * @return void
-     */
-    protected function displayBody(): void
-    {
-        include_once "view/templates/{$this->template}.phtml";
     }
 
     /**
@@ -163,5 +150,21 @@ class LayoutProccessor
     public function hasData(string $key): bool
     {
         return array_key_exists($key, $this->data);
+    }
+
+    /**
+     * @return Escaper
+     */
+    protected function getEscaper(): Escaper
+    {
+        return $this->escaper;
+    }
+
+    /**
+     * @return void
+     */
+    protected function displayBody(): void
+    {
+        include_once "view/templates/{$this->template}.phtml";
     }
 }

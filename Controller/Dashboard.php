@@ -1,34 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Controller;
 
-
+use Middlewares\RestrictNotSignMiddleware;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Vstore\Router\Http\Controller;
 use Vstore\Router\View\LayoutProccessor;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Middlewares\RestrictNotSignMiddleware;
 
 /**
- *
+ * Dashboard controller.
  */
 class Dashboard extends Controller
 {
-    public static array $roles = [
-        'admin' => 'all',
-        'user' => 'all'
-    ];
-
+    /**
+     * @var array|string[]
+     */
     public array $middlewareBefore = [
         RestrictNotSignMiddleware::class
     ];
-
 
     /**
      * @var Response
      */
     protected Response $response;
 
+    /**
+     * @var Session
+     */
     protected Session $session;
 
     /**
@@ -132,6 +133,9 @@ class Dashboard extends Controller
         );
     }
 
+    /**
+     * @return array|bool
+     */
     private function getSessionUser() : array | bool
     {
         $result = false;

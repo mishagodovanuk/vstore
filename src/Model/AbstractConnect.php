@@ -1,23 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vstore\Router\Model;
 
 use Vstore\Router\ConfigProvider;
 
 /**
- *
+ * Class AbstractConnect
  */
 abstract class AbstractConnect
 {
+
     /**
-     * @var
+     * @var \PDO|null
      */
-    protected $connect;
+    protected \PDO|null $connect;
 
     /**
      * @return \PDO
      */
-    public function getConnect()
+    public function getConnect(): \PDO
     {
         if (!$this->connect) {
             $configProvider = new ConfigProvider();
@@ -27,6 +30,7 @@ abstract class AbstractConnect
                 $db['username'],
                 $db['password']
             );
+
             $this->connect->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
         }
 

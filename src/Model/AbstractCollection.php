@@ -1,24 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vstore\Router\Model;
 
 use Vstore\Router\Model\AbstractModel;
 use Vstore\Router\Model\AbstractRepository;
 
 /**
- *
+ * Class AbstractCollection
  */
 abstract class AbstractCollection
 {
     /**
-     * @var mixed
+     * @var array
      */
-    private mixed $model;
+    protected array $items = [];
 
     /**
-     * @var \Vstore\Router\Model\AbstractRepository|string
+     * @var string
      */
-    private AbstractRepository | string $repository;
+    protected  string $filterQuery;
+
+    /**
+     * @var string
+     */
+    private string  $model;
+
+    /**
+     * @var AbstractRepository|string
+     */
+    private AbstractRepository|string $repository;
 
     /**
      * @var array
@@ -26,30 +38,23 @@ abstract class AbstractCollection
     private array $ids = [];
 
     /**
-     * @var array
-     */
-    protected array $items = [];
-    /**
-     * @var string
-     */
-    protected  string $filterQuery;
-
-    /**
-     * @param \Vstore\Router\Model\AbstractModel|string $model
+     * @param string $model
      * @param \Vstore\Router\Model\AbstractRepository|string $repository
      * @return void
      */
-    protected function _init(AbstractModel | string $model, AbstractRepository | string $repository): void
-    {
+    protected function _init(
+        string $model,
+        AbstractRepository | string $repository
+    ): void {
         $this->model = $model;
         $this->repository = $repository;
     }
 
     /**
-     * @param $query
+     * @param string $query
      * @return $this
      */
-    public  function addFilterQuery($query)
+    public  function addFilterQuery(string $query): static
     {
         $this->filterQuery = $query;
 
@@ -59,7 +64,7 @@ abstract class AbstractCollection
     /**
      * @return $this
      */
-    public function deleteFilterQuery()
+    public function deleteFilterQuery(): static
     {
         unset($this->filterQuery);
 
@@ -67,9 +72,11 @@ abstract class AbstractCollection
     }
 
     /**
+     * Run query function
+     *
      * @return $this
      */
-    public function load()
+    public function load(): static
     {
         if ($this->ids) {
             return $this;
@@ -80,6 +87,7 @@ abstract class AbstractCollection
         if (isset($this->filterQuery)) {
             $query .= " WHERE " . $this->filterQuery;
         }
+
         $repository = $this->getRepository();
         $fetchResult = $repository
             ->getConnect()
@@ -109,7 +117,7 @@ abstract class AbstractCollection
     /**
      * @return mixed|null
      */
-    public function getFirstItem()
+    public function getFirstItem(): mixed
     {
         if (!$this->items) {
             $this->getItems();

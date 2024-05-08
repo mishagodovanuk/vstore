@@ -6,37 +6,38 @@ use Vstore\Router\Model\AbstractModel;
 use Vstore\Router\Model\AbstractConnect;
 
 /**
- *
+ * Class AbstractRepository
  */
 abstract class AbstractRepository extends AbstractConnect
 {
     /**
-     * @var
+     * @var AbstractModel|null
      */
-    public $instance;
+    public AbstractModel|null $instance;
 
     /**
-     * @param $instance
+     * @param AbstractModel $instance
      * @return void
      */
-    protected function setInstance($instance)
+    protected function setInstance(AbstractModel $instance): void
     {
         $this->instance = $instance;
     }
 
     /**
-     * @return mixed
+     * @return AbstractModel|null
      */
-    protected function getInstance()
+    protected function getInstance(): ?AbstractModel
     {
         return $this->instance;
     }
 
     /**
-     * @param $model
+     * @param AbstractModel $model
+     *
      * @return \Vstore\Router\Model\AbstractModel|false
      */
-    public function save($model): AbstractModel | false
+    public function save(AbstractModel $model): AbstractModel|false
     {
         $data = $model->getData();
         unset($data['id']);
@@ -60,7 +61,11 @@ abstract class AbstractRepository extends AbstractConnect
         return $model;
     }
 
-    public function update($model): AbstractModel | false
+    /**
+     * @param \Vstore\Router\Model\AbstractModel $model
+     * @return \Vstore\Router\Model\AbstractModel|false
+     */
+    public function update(AbstractModel $model): AbstractModel|false
     {
         $data = $model->getData();
         $id = $data['id'];
@@ -88,10 +93,10 @@ abstract class AbstractRepository extends AbstractConnect
     }
 
     /**
-     * @param $model
+     * @param AbstractModel $model
      * @return \Vstore\Router\Model\AbstractModel|null
      */
-    public function get($model): AbstractModel | null
+    public function get(AbstractModel $model): ?AbstractModel
     {
         if ($model->getData('id')) {
             return $this->getById($model->getData('id'));
@@ -101,25 +106,24 @@ abstract class AbstractRepository extends AbstractConnect
     }
 
     /**
-     * @param $model
+     * @param AbstractModel $model
      * @return bool
      */
-    public function delete($model) : bool
+    public function delete(AbstractModel $model): bool
     {
         if ($model->getId('id')) {
             return $this->deleteById($model->getData('id'));
         }
-
         $model->deleteData();
 
         return true;
     }
 
     /**
-     * @param $id
+     * @param mixed $id
      * @return bool
      */
-    public function deleteById($id) : bool
+    public function deleteById(mixed $id) : bool
     {
         $this->startTransaction();
 
@@ -134,24 +138,23 @@ abstract class AbstractRepository extends AbstractConnect
 
             return false;
         }
-
         $this->endTransaction();
 
         return true;
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param mixed $id
+     * @return AbstractModel
      */
-    public function getById($id)
+    public function getById(mixed $id): AbstractModel
     {
+        $model = new $this->instance();
+
         try {
             $data = $this->getConnect()
                 ->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE " . $this->getInstance()::PRIMARY_KEY . "=" . $id)
                 ->fetchAll();
-
-            $model = new $this->instance();
             $model->setData(array_shift($data));
         } catch (\Exception $e) {
         }
