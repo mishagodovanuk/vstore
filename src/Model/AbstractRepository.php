@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Vstore\Router\Model;
 
 use Vstore\Router\Model\AbstractModel;
@@ -11,23 +13,23 @@ use Vstore\Router\Model\AbstractConnect;
 abstract class AbstractRepository extends AbstractConnect
 {
     /**
-     * @var AbstractModel|null
+     * @var string
      */
-    public AbstractModel|null $instance;
+    public string $instance;
 
     /**
-     * @param AbstractModel $instance
+     * @param string $instance
      * @return void
      */
-    protected function setInstance(AbstractModel $instance): void
+    protected function setInstance(string $instance): void
     {
         $this->instance = $instance;
     }
 
     /**
-     * @return AbstractModel|null
+     * @return AbstractModel|string
      */
-    protected function getInstance(): ?AbstractModel
+    protected function getInstance(): AbstractModel|string
     {
         return $this->instance;
     }
@@ -35,9 +37,9 @@ abstract class AbstractRepository extends AbstractConnect
     /**
      * @param AbstractModel $model
      *
-     * @return \Vstore\Router\Model\AbstractModel|false
+     * @return \Vstore\Router\Model\AbstractModel|bool
      */
-    public function save(AbstractModel $model): AbstractModel|false
+    public function save(AbstractModel $model): AbstractModel|bool
     {
         $data = $model->getData();
         unset($data['id']);
@@ -147,7 +149,7 @@ abstract class AbstractRepository extends AbstractConnect
      * @param mixed $id
      * @return AbstractModel
      */
-    public function getById(mixed $id): AbstractModel
+    public function getById(mixed $id)
     {
         $model = new $this->instance();
 

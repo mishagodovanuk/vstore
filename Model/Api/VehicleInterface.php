@@ -1,31 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model\Api;
 
 /**
- *
+ * Interface VehicleInterface
  */
 interface VehicleInterface
 {
     /**
      * @return int|null
      */
-    public function getId(): int | null;
+    public function getId(): ?int;
 
     /**
-     * @param $id
-     * @return mixed
+     * @param string|int $id
+     * @return void
      */
-    public function setId($id);
+    public function setId(string|int $id): void;
 
     /**
      * @return string|null
      */
-    public function getName(): string | null;
+    public function getName(): ?string;
 
     /**
-     * @param $name
-     * @return mixed
+     * @param string $name
+     * @return void
      */
-    public function setName($name);
+    public function setName(string $name): void;
 }

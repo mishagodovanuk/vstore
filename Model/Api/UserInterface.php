@@ -1,31 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model\Api;
 
 /**
- *
+ * Interface UserInterface
  */
 interface UserInterface
 {
     /**
      * @return string|null
      */
-    public function getId(): string | null;
+    public function getId(): ?string;
 
     /**
      * @return string|null
      */
-    public function getName(): string | null;
+    public function getName(): ?string;
 
     /**
      * @return string|null
      */
-    public function getEmail(): string | null;
+    public function getEmail(): ?string;
 
     /**
      * @return string|null
      */
-    public function getPassword(): string | null;
+    public function getPassword(): ?string;
 
     /**
      * @param string $id

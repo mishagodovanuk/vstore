@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Model\Api\UserInterface;
@@ -11,7 +13,7 @@ use Model\Api\UserRepositoryInterface;
 use Model\RoleRepository;
 
 /**
- *
+ * Class UserRepository
  */
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {
@@ -31,10 +33,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * @param $email
-     * @return mixed
+     * @param string $email
+     * @return UserInterface
      */
-    public function getByEmail($email)
+    public function getByEmail(string $email): UserInterface
     {
         $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE email = '$email'")
             ->fetchAll();
@@ -50,10 +52,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param mixed $id
+     * @return UserInterface
      */
-    public function getById($id)
+    public function getById(mixed $id): UserInterface
     {
         $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE id = '$id'")
             ->fetchAll();
@@ -69,10 +71,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * @param $model
-     * @return AbstractModel|false
+     * @param AbstractModel $model
+     * @return AbstractModel|bool
      */
-    public function save($model): AbstractModel | false
+    public function save(AbstractModel $model): AbstractModel|bool
     {
         $data = $model->getData();
         $role = 'user';
@@ -109,5 +111,25 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         return $model;
+    }
+
+    /**
+     * @return array
+     */
+    public function list(): array
+    {
+        $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME)
+            ->fetchAll();
+        $models = [];
+
+        foreach ($data as $item) {
+            $model = new $this->instance();
+            $model->setData($item);
+            $role = $this->roleRepository->getByUserId($model->getId());
+            $model->setRole($role->getData('role'));
+            $models[] = $model;
+        }
+
+        return $models;
     }
 }

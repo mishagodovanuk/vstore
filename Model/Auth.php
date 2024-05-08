@@ -1,24 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Model\Api\UserInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- *
+ * Class Auth
  */
 class Auth
 {
     /**
      * @var UserRepository
      */
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
     /**
      * @var Session
      */
-    protected $session;
+    protected Session $session;
 
     /**
      * @param UserRepository $userRepository

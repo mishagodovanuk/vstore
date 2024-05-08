@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Vstore\Router\Model\AbstractRepository;
 use Model\Role;
 
 /**
- *
+ * Class RoleRepository
  */
 class RoleRepository extends AbstractRepository
 {
@@ -20,9 +22,9 @@ class RoleRepository extends AbstractRepository
 
     /**
      * @param $userId
-     * @return mixed
+     * @return Role
      */
-    public function getByUserId($userId): mixed
+    public function getByUserId($userId): Role
     {
         $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE user_id = " . $userId)
             ->fetchAll();

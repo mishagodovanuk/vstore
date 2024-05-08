@@ -1,22 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Vstore\Router\Model\AbstractModel;
 use Model\Api\UserInterface;
 
 /**
- *
+ * Class User
  */
 class User extends AbstractModel implements UserInterface
 {
     /**
-     *
+     * @var string TABLE_NAME
      */
     public const TABLE_NAME = 'users';
 
     /**
-     *
+     * @var string PRIMARY_KEY
      */
     public const PRIMARY_KEY = 'id';
 
@@ -48,7 +50,7 @@ class User extends AbstractModel implements UserInterface
     /**
      * @return string|null
      */
-    public function getId(): string | null
+    public function getId(): ?string
     {
         return $this->getData('id');
     }
@@ -56,7 +58,7 @@ class User extends AbstractModel implements UserInterface
     /**
      * @return string|null
      */
-    public function getName(): string | null
+    public function getName(): ?string
     {
         return $this->getData('name');
     }
@@ -64,7 +66,7 @@ class User extends AbstractModel implements UserInterface
     /**
      * @return string|null
      */
-    public function getEmail(): string | null
+    public function getEmail(): ?string
     {
         return $this->getData('email');
     }
@@ -72,7 +74,7 @@ class User extends AbstractModel implements UserInterface
     /**
      * @return string|null
      */
-    public function getPassword(): string | null
+    public function getPassword(): ?string
     {
         return $this->getData('password');
     }
@@ -117,15 +119,15 @@ class User extends AbstractModel implements UserInterface
      * @param string $role
      * @return void
      */
-    public function setRole(string $role)
+    public function setRole(string $role): void
     {
         $this->setData('role', $role);
     }
 
     /**
-     * @return array|mixed|null
+     * @return string|null
      */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->getData('role');
     }

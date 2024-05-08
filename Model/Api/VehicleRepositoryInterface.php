@@ -1,32 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model\Api;
 
+use Vstore\Router\Model\AbstractModel;
+
 /**
- *
+ * Interface VehicleRepositoryInterface
  */
 interface VehicleRepositoryInterface
 {
     /**
-     * @param $vehicle
-     * @return mixed
+     * @param AbstractModel $vehicle
+     * @return AbstractModel|null
      */
-    public function get($vehicle);
+    public function get(AbstractModel $vehicle): ?AbstractModel;
 
     /**
-     * @param $vehicle
-     * @return mixed
+     * @param AbstractModel $vehicle
+     * @return AbstractModel|bool
      */
-    public function save($vehicle);
+    public function save(AbstractModel $vehicle): AbstractModel|bool;
 
     /**
-     * @param $vehicle
-     * @return mixed
+     * @param AbstractModel $vehicle
+     * @return bool
      */
-    public function delete($vehicle);
+    public function delete(AbstractModel $vehicle): bool;
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function list();
+    public function list(): array;
 }

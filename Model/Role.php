@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Vstore\Router\Model\AbstractModel;
 
 /**
- *
+ * Class Role
  */
 class Role extends AbstractModel
 {
@@ -43,10 +45,10 @@ class Role extends AbstractModel
     }
 
     /**
-     * @param $id
-     * @return
+     * @param string|int $id
+     * @return void
      */
-    public function setId($id)
+    public function setId(string|int $id): void
     {
         $this->setData('id', $id);
     }
@@ -60,10 +62,10 @@ class Role extends AbstractModel
     }
 
     /**
-     * @param $role
+     * @param string $role
      * @return void
      */
-    public function setRole($role)
+    public function setRole(string $role): void
     {
         $this->setData('role', $role);
     }
@@ -77,10 +79,10 @@ class Role extends AbstractModel
     }
 
     /**
-     * @param $user_id
+     * @param string|int $user_id
      * @return void
      */
-    public function setUserId($user_id)
+    public function setUserId(string|int $user_id): void
     {
         $this->setData('user_id', $user_id);
     }

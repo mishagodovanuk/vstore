@@ -1,21 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Model;
 
 use Model\Vehicle;
 use Vstore\Router\Model\AbstractRepository;
 use Model\Api\VehicleRepositoryInterface;
 
+/**
+ * Class VehicleRepository
+ */
 class VehicleRepository extends AbstractRepository implements VehicleRepositoryInterface
 {
+    /**
+     * @var array
+     */
     protected $items = [];
 
+    /**
+     * VehicleRepository constructor.
+     */
     public function __construct()
     {
         $this->setInstance(Vehicle::class);
     }
 
-    public function list()
+    /**
+     * @return array
+     */
+    public function list(): array
     {
         $query = $this->getConnect()->query('SELECT * FROM ' . Vehicle::TABLE_NAME);
         $items = $query->fetchAll();
@@ -27,12 +41,19 @@ class VehicleRepository extends AbstractRepository implements VehicleRepositoryI
         return  $this->getItems();
     }
 
-    protected function getItems()
+    /**
+     * @return array
+     */
+    protected function getItems(): array
     {
         return $this->items;
     }
 
-    private function initItems(array $data)
+    /**
+     * @param array $data
+     * @return static
+     */
+    private function initItems(array $data): static
     {
         foreach ($data as $item) {
             try {
