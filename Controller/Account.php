@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Middlewares\RestrictNotSignMiddleware;
+use Middlewares\AccessRoleMiddleware;
 use Model\Auth;
 use Model\User;
 use Model\UserRepository;
@@ -25,7 +25,7 @@ class Account extends Controller
      * @var array|string[]
      */
     public array $middlewareBefore = [
-        RestrictNotSignMiddleware::class
+        AccessRoleMiddleware::class
     ];
 
     /**

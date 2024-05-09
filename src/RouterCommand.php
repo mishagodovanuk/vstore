@@ -347,7 +347,6 @@ class RouterCommand
      */
     protected function runMiddleware(string $command, string $middleware, array $params, array $info)
     {
-        //TODO already contains routerId inside $info array
         $middlewareMethod = 'handle'; // For now, it's constant.
 
         $controller = $this->resolveClass($middleware, $info['path'], $info['namespace'], $info['routerId']);

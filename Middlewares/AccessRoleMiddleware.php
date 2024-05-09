@@ -12,15 +12,21 @@ use Psr\Container\ContainerInterface;
 /**
  * Used to restrict not signed users from dashboard
  */
-class RestrictNotSignMiddleware extends Middleware
+class AccessRoleMiddleware extends Middleware
 {
     /**
      * @var Session
      */
     private Session $session;
 
+    /**
+     * @var RouterPermission
+     */
     protected RouterPermission $routerPermission;
 
+    /**
+     * @var string|int|mixed
+     */
     protected string|int $currentRouterId;
 
     /**
@@ -46,38 +52,36 @@ class RestrictNotSignMiddleware extends Middleware
      */
     public function handle(): bool|RedirectResponse
     {
-        return true;
-        // Restrict not signed users from dashboard
-        // TODO implement API call fixes here
-        if ((!str_contains($this->request->getRequestUri(), 'login') &&
-            !str_contains($this->request->getRequestUri(), 'register')) &&
-            $this->isGuestUser()
-        ) {
-            return new RedirectResponse('/account/login');
-        }
+        $access = $this->routerPermission->getPermission($this->currentRouterId);
 
-        // Redirect signed users from login and register pages, only logout page is allowed
-        if ((str_contains($this->request->getRequestUri(), 'login') ||
-            str_contains($this->request->getRequestUri(), 'register')) &&
-            !$this->isGuestUser()
-        ) {
-            return new RedirectResponse('/');
+        if ($this->checkPermission($access, $this->getUserRole())) {
+            $redirectUrl = $this->getUserRole() == 'guest' ? '/login' : $this->request->headers->get('referer');
+
+            return new RedirectResponse($redirectUrl);
         }
 
         return true;
     }
 
     /**
-     * @return bool
+     * @param $access
+     * @param string $role
+     * @return bool|string
      */
-    protected function isGuestUser(): bool
+    protected function checkPermission($access, string $role): bool|string
     {
-        $result  = false;
-
-        if ($this->session->has('user_role') && $this->session->get('user_role') == 'guest') {
-            $result = true;
+        if (array_key_exists($role, $access)) {
+            return $access[$role];
         }
 
-        return $result;
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    private function getUserRole(): string
+    {
+        return $this->session->get('user_role') ?? 'guest';
     }
 }

@@ -19,30 +19,53 @@ $router = new Router([
     ],
 ]);
 
-$router->get('/', 'Dashboard@indexAction');
-$router->get('/companys', 'Dashboard@companyAction');
-$router->get('/drivers', 'Dashboard@driversAction');
-$router->get('/warehouses', 'Dashboard@warehouseAction');
-$router->get('/products', 'Dashboard@productAction');
-$router->get('/admin', 'Dashboard@adminAction');
+$router->get('/', 'Dashboard@indexAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/companys', 'Dashboard@companyAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/drivers', 'Dashboard@driversAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/warehouses', 'Dashboard@warehouseAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/products', 'Dashboard@productAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/admin', 'Dashboard@adminAction')
+    ->setPermission('admin.view');
 
-$router->get('/account/login', 'Account@loginAction')->setPermission('admin.view');
-$router->post('/account/login', 'Account@loginPostAction')->setPermission('admin.update');
+$router->get('/account/login', 'Account@loginAction')
+    ->setPermission('guest.view');
+$router->post('/account/login', 'Account@loginPostAction')
+    ->setPermission('guest.update');
 
-$router->get('/account/register', 'Account@registerAction');
-$router->post('/account/register', 'Account@registerPostAction');
+$router->get('/account/register', 'Account@registerAction')
+    ->setPermission('guest.view');
+$router->post('/account/register', 'Account@registerPostAction')
+    ->setPermission('guest.update');
 
 $router->any('/account/logout', 'Account@logoutAction');
 
-$router->get('/vehicle/list', 'Vehicle@listAction');
-$router->get('/vehicle/:id', 'Vehicle@viewAction');
-$router->get('/vehicle/edit/:id', 'Vehicle@editAction');
-$router->get('/vehicle/create', 'Vehicle@createAction');
+$router->get('/vehicle/list', 'Vehicle@listAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/vehicle/:id', 'Vehicle@viewAction')
+    ->setPermission('admin.view')
+    ->setPermission('user.view');
+$router->get('/vehicle/edit/:id', 'Vehicle@editAction')
+    ->setPermission('admin.view|update');
+$router->get('/vehicle/create', 'Vehicle@createAction')
+    ->setPermission('admin.view|update');
 
+$router->post('/vehicle/save', 'Vehicle@saveAction')
+    ->setPermission('admin.create');
+$router->post('/vehicle/save/:id', 'Vehicle@updateAction')
+    ->setPermission('admin.update');
 
-$router->post('/vehicle/save', 'Vehicle@saveAction');
-$router->post('/vehicle/save/:id', 'Vehicle@updateAction'); //used this one because html form not recognized put
-
-$router->delete('/vehicle/delete/:id', 'Vehicle@deleteAction');
+$router->delete('/vehicle/delete/:id', 'Vehicle@deleteAction')
+    ->setPermission('admin.delete');
 
 $router->run();

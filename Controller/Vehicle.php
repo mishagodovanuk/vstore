@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Controller;
 
+use Middlewares\AccessRoleMiddleware;
 use Model\Vehicle as VehicleModel;
 use Model\VehicleRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,6 +19,13 @@ use Vstore\Router\View\LayoutProccessor;
  */
 class Vehicle extends Controller
 {
+    /**
+     * @var array|string[]
+     */
+    public array $middlewareBefore = [
+        AccessRoleMiddleware::class
+    ];
+
     /**
      * @var Session
      */

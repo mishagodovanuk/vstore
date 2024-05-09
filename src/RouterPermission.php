@@ -58,21 +58,24 @@ class RouterPermission
      */
     public function setPermission(string|int $routeId, string $permission): void
     {
-        $parts = explode('|', $permission);
+        $rolePermissions = explode('.', $permission);
+        $segments = explode('|', $rolePermissions[1]);
+        $role = $rolePermissions[0];
 
-        foreach ($parts as $part) {
-            $segments = explode('.', $part);
-            $role = $segments[0];
-            $permission = $segments[1];
+        if (in_array('all', $segments)) {
+            $this->permissions[$routeId][$role] = self::ALL_PERMISSIONS;
+            return;
+        }
 
-            if ($permission === 'all') {
-                $this->permissions[$routeId][$role] = self::ALL_PERMISSIONS;
-            } else {
-                if (isset($this->permissions[$routeId][$role])) {
-                    $this->permissions[$routeId][$role][] = $permission;
-                } else {
-                    $this->permissions[$routeId][$role] = [$permission];
+        if (count($segments) < 0) {
+            $this->permissions[$routeId][$role] = $segments[0];
+        } else {
+            // Append each permission to the role's permissions
+            foreach ($segments as $permission) {
+                if (!isset($this->permissions[$routeId][$role])) {
+                    $this->permissions[$routeId][$role] = [];
                 }
+                $this->permissions[$routeId][$role][] = $permission;
             }
         }
     }

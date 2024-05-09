@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Controller;
 
-use Middlewares\RestrictNotSignMiddleware;
+use Middlewares\AccessRoleMiddleware;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Vstore\Router\Http\Controller;
@@ -19,7 +19,7 @@ class Dashboard extends Controller
      * @var array|string[]
      */
     public array $middlewareBefore = [
-        RestrictNotSignMiddleware::class
+        AccessRoleMiddleware::class
     ];
 
     /**
