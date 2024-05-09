@@ -39,14 +39,10 @@ class RouterCommand
     /** @var Response */
     protected Response $response;
 
-    /**
-     * @var \Vstore\Router\RouterPermission
-     */
+    /** @var \Vstore\Router\RouterPermission */
     protected RouterPermission $permission;
 
-    /**
-     * @var string|int
-     */
+    /** @var string|int */
     protected string|int $routerId;
 
     /** @var array */
@@ -65,6 +61,7 @@ class RouterCommand
      * @param Response $response
      * @param RouterPermission $permission
      * @param array $middlewares
+     * @throws ReflectionException
      */
     public function __construct(
         string   $baseFolder,
@@ -74,8 +71,7 @@ class RouterCommand
         Response $response,
         RouterPermission $permission,
         array    $middlewares
-    )
-    {
+    ) {
         $this->baseFolder = $baseFolder;
         $this->paths = $paths;
         $this->namespaces = $namespaces;
@@ -132,8 +128,7 @@ class RouterCommand
         Response $response,
         RouterPermission $permission,
         array    $middlewares
-    ): ?RouterCommand
-    {
+    ): ?RouterCommand {
         if (null === self::$instance) {
             self::$instance = new static(
                 $baseFolder,
@@ -354,6 +349,7 @@ class RouterCommand
         if (in_array($command, $this->markedMiddlewares)) {
             return true;
         }
+
         $this->markedMiddlewares[] = $command;
 
         if (!method_exists($controller, $middlewareMethod)) {

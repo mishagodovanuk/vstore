@@ -70,11 +70,11 @@ class RouterPermission
         if (count($segments) < 0) {
             $this->permissions[$routeId][$role] = $segments[0];
         } else {
-            // Append each permission to the role's permissions
             foreach ($segments as $permission) {
                 if (!isset($this->permissions[$routeId][$role])) {
                     $this->permissions[$routeId][$role] = [];
                 }
+
                 $this->permissions[$routeId][$role][] = $permission;
             }
         }

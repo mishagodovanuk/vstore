@@ -59,7 +59,7 @@ class AccessRoleMiddleware extends Middleware
     {
         $access = $this->routerPermission->getPermission($this->currentRouterId);
 
-        if (!$this->checkPermission($access, $this->getUserRole())) {
+        if ($access && !$this->checkPermission($access, $this->getUserRole())) {
             //TODO fix this part of code, curretly it's a little trick
             $redirectUrl = $this->getUserRole() == 'guest' ? '/account/login' : $this->request->headers->get('referer');
             $redirectUrl = $redirectUrl ?? '/';

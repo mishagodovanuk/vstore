@@ -32,11 +32,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class Router
 {
     /** Router Version */
-    const VERSION = '3.0.0';
+    const VERSION = '3.0.1';
 
-    /**
-     * @var Session
-     */
+    /** @var Session */
     public Session $session;
 
     /** @var string $baseFolder Base folder of the project */
@@ -99,9 +97,7 @@ class Router
     /** @var array $middlewareGroups Middleware Groups */
     protected array $middlewareGroups = [];
 
-    /**
-     * @var RouterPermission
-     */
+    /** @var RouterPermission */
     protected \Vstore\Router\RouterPermission $permission;
 
     /** @var RouterRequest */
@@ -110,9 +106,7 @@ class Router
     /** @var bool */
     private bool $debug = false;
 
-    /**
-     * @var int
-     */
+    /** @var int Router identifier */
     private int $routerId = 0;
 
     /**

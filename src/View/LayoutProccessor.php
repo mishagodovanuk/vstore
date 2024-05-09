@@ -101,14 +101,6 @@ class LayoutProccessor
     }
 
     /**
-     * @return FlashBagInterface
-     */
-    public function getMessages() : FlashBagInterface
-    {
-        return $this->messages;
-    }
-
-    /**
      * @param array|string $dataKey
      * @param $value
      * @return $this
@@ -166,5 +158,13 @@ class LayoutProccessor
     protected function displayBody(): void
     {
         include_once "view/templates/{$this->template}.phtml";
+    }
+
+    /**
+     * @return FlashBagInterface
+     */
+    public function getMessages() : FlashBagInterface
+    {
+        return $this->messages;
     }
 }
