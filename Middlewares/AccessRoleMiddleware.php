@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Middlewares;
 
-use Vstore\Router\Http\Middleware;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Vstore\Router\RouterPermission;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Vstore\Router\Http\Middleware;
+use Vstore\Router\RouterPermission;
 
 /**
  * Used to restrict not signed users from dashboard
@@ -38,11 +41,13 @@ class AccessRoleMiddleware extends Middleware
     public function __construct(
         Session $session,
         Request $request,
+        Response $response,
         RouterPermission $routerPermission,
         ContainerInterface $container
     ) {
+        parent::__construct($request, $response);
+
         $this->session = $session;
-        $this->request = $request->createFromGlobals();
         $this->routerPermission = $routerPermission;
         $this->currentRouterId = $container->get('currentRouterId');
     }
@@ -54,8 +59,8 @@ class AccessRoleMiddleware extends Middleware
     {
         $access = $this->routerPermission->getPermission($this->currentRouterId);
 
-        if ($this->checkPermission($access, $this->getUserRole())) {
-            $redirectUrl = $this->getUserRole() == 'guest' ? '/login' : $this->request->headers->get('referer');
+        if (!$this->checkPermission($access, $this->getUserRole())) {
+            $redirectUrl = $this->getUserRole() == 'guest' ? '/account/login' : $this->request->headers->get('referer');
 
             return new RedirectResponse($redirectUrl);
         }
@@ -66,12 +71,12 @@ class AccessRoleMiddleware extends Middleware
     /**
      * @param $access
      * @param string $role
-     * @return bool|string
+     * @return bool
      */
-    protected function checkPermission($access, string $role): bool|string
+    protected function checkPermission($access, string $role): bool
     {
         if (array_key_exists($role, $access)) {
-            return $access[$role];
+            return true;
         }
 
         return false;

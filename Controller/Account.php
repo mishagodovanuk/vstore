@@ -29,16 +29,6 @@ class Account extends Controller
     ];
 
     /**
-     * @var Response
-     */
-    protected Response $response;
-
-    /**
-     * @var Request
-     */
-    protected Request $request;
-
-    /**
      * @var UserRepository
      */
     protected UserRepository $userRepository;
@@ -76,8 +66,8 @@ class Account extends Controller
         Auth $auth,
         Validator $validator
     ) {
-        $this->request = $request->createFromGlobals();
-        $this->response = $response;
+        parent::__construct($request, $response);
+
         $this->layoutProccessor = $layoutProccessor;
         $this->userRepository = $userRepository;
         $this->session = $session;

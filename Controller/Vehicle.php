@@ -32,16 +32,6 @@ class Vehicle extends Controller
     protected Session $session;
 
     /**
-     * @var Response
-     */
-    protected Response $response;
-
-    /**
-     * @var Request
-     */
-    protected Request $request;
-
-    /**
      * @var VehicleRepository
      */
     protected VehicleRepository $vehicleRepository;
@@ -65,10 +55,10 @@ class Vehicle extends Controller
         Request $request,
         VehicleRepository $vehicleRepository
     ) {
+        parent::__construct($request, $response);
+
         $this->session = $session;
-        $this->response = $response;
         $this->layoutProccessor = $layoutProccessor;
-        $this->request = $request->createFromGlobals();
         $this->vehicleRepository = $vehicleRepository;
 
         $this->layoutProccessor->setData('userdata', $this->getSessionUser());

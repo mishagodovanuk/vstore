@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controller;
 
 use Middlewares\AccessRoleMiddleware;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Vstore\Router\Http\Controller;
@@ -23,25 +24,24 @@ class Dashboard extends Controller
     ];
 
     /**
-     * @var Response
-     */
-    protected Response $response;
-
-    /**
      * @var Session
      */
     protected Session $session;
 
     /**
      * @param Response $response
+     * @param Request $request
      * @param LayoutProccessor $layoutProccessor
      * @param Session $session
      */
     public function __construct(
         Response $response,
+        Request $request,
         LayoutProccessor $layoutProccessor,
         Session $session
     ) {
+        parent::__construct($request, $response);
+
         $this->response = $response;
         $this->layoutProccessor = $layoutProccessor;
         $this->session = $session;
