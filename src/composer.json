@@ -1,0 +1,31 @@
+{
+    "name": "vstore/skeleton",
+    "type": "library",
+    "description": "Simple mcv skeleton, based on some routing system, which also support different request types, middlewares, controllers, DActiveRecord, view processor and more",
+    "keywords": [
+        "vstore",
+        "skeleton",
+        "mvc",
+        "router"
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-json": "*",
+        "symfony/http-foundation": "^6.4",
+        "php-di/php-di": "^7.0",
+        "ext-ctype": "*",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "doctrine/dbal": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Vstore\\Router\\": ""        },
+        "psr-0": {
+            "Vstore\\Router\\": ""
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
