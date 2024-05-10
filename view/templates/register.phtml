@@ -1,9 +1,10 @@
-<div class="d-flex justify-content-center align-items-center vh-40">
-    <div class="position-relative">
-        <div class="position-absolute top-40 start-40 translate-middle">
-            <h1>Register page</h1>
-
-            <form style="min-width: 300px" id="register" action="/account/register" method="post">
+<div class="">
+    <div class="">
+        <div class="">
+            <form class="col-lg-5 offset-lg-3 " style="min-width: 300px" id="register" action="/account/register" method="post">
+                <div class="form-group row justify-content-center">
+                    <h3>Register</h3>
+                </div>
                 <div class="form-group">
                     <label for="exampleInputUsername1">Username</label>
                     <input type="text" name="username" class="form-control" id="exampleInputUsername1" placeholder="Username">
@@ -17,7 +18,7 @@
                     <label for="exampleInputPassword1">Password</label>
                     <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                 </div>
-                <select name="role" id="role" form="register">
+                <select class="selectpicker" data-style="btn-info" name="role" id="role" form="register">
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                 </select>

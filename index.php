@@ -7,6 +7,8 @@ require 'vendor/autoload.php';
 require 'etc/config.php';
 
 use Vstore\Router\Router;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 $router = new Router([
     'paths' => [
@@ -67,5 +69,9 @@ $router->post('/vehicle/save/:id', 'Vehicle@updateAction')
 
 $router->delete('/vehicle/delete/:id', 'Vehicle@deleteAction')
     ->setPermission('admin.delete');
+$router->notFound(function (Request $request, Response $response) {
+    return $response->setStatusCode(404)
+        ->setContent('404 not found (page currently in dev)');
+});
 
 $router->run();
