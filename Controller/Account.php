@@ -102,8 +102,8 @@ class Account extends Controller
      */
     public function loginPostAction(): RedirectResponse
     {
-        $email = $this->request->request->get('email');
-        $password = $this->request->request->get('password');
+        $email = $this->request->get('email');
+        $password = $this->request->get('password');
 
         if (!$this->validator->isValidEmail($email)) {
             $this->session->getFlashBag()->add('error', 'Invalid email or password');
@@ -129,10 +129,10 @@ class Account extends Controller
      */
     public function registerPostAction(): RedirectResponse
     {
-        $email = $this->request->request->get('email');
-        $password = $this->request->request->get('password');
-        $name = $this->request->request->get('username');
-        $role = $this->request->request->get('role');
+        $email = $this->request->get('email');
+        $password = $this->request->get('password');
+        $name = $this->request->get('username');
+        $role = $this->request->get('role');
         $errors = 0;
 
         if ($this->auth->checkIfUserExists($email)) {
@@ -192,5 +192,26 @@ class Account extends Controller
         $this->auth->logout();
 
         return new RedirectResponse('/account/login');
+    }
+
+    /**
+     * Retrieve user token.
+     *
+     * @return Response
+     */
+    public function getUserTokenAction(): Response
+    {
+        $email = $this->request->get('email');
+        $password = $this->request->get('password');
+
+        if(!$email || !$password) {
+            return $this->response->setContent('email or password is missing');
+        }
+
+        if ($token = $this->auth->retrieveUserToken($email, $password)) {
+            return $this->response->setContent($token);
+        }
+
+        return $this->response->setContent('User not found or invalid password');
     }
 }

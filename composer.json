@@ -1,7 +1,8 @@
 {
     "name": "vstore/test",
     "type": "library",
-    "description": "Test task",
+    "description": "Simple mvc system",
+    "license": "MIT",
     "keywords": [
     ],
     "require": {

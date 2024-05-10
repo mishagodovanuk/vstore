@@ -50,6 +50,7 @@ $router->post('/account/register', 'Account@registerPostAction')
     ->setPermission('guest.update');
 
 $router->any('/account/logout', 'Account@logoutAction');
+$router->get('/account/user/token', 'Account@getUserTokenAction');
 
 $router->get('/vehicle/list', 'Vehicle@listAction')
     ->setPermission('admin.view')

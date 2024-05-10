@@ -171,7 +171,7 @@ class Vehicle extends Controller
      */
     public function saveAction(): Response
     {
-        $type = $this->request->request->get('type');
+        $type = $this->request->get('type');
 
         if ($type) {
             $model = new VehicleModel();
@@ -197,7 +197,7 @@ class Vehicle extends Controller
     public function updateAction($id): Response
     {
         if ($id) {
-            $type = $this->request->request->get('type');
+            $type = $this->request->get('type');
             $model = new VehicleModel();
             $model->setId($id);
             $model->setName($type);

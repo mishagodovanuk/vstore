@@ -78,6 +78,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     {
         $data = $model->getData();
         $role = 'user';
+        $data['token'] = $this->generateToken();
 
         if (array_key_exists('role', $data)) {
             $role = $data['role'];
@@ -114,6 +115,38 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
+     * @param \Vstore\Router\Model\AbstractModel $model
+     * @return \Vstore\Router\Model\AbstractModel|false
+     */
+    public function update(AbstractModel $model): AbstractModel|false
+    {
+        $data = $model->getData();
+        $data['token'] = $this->generateToken();
+        $id = $data['id'];
+
+        unset($data['id']);
+        $setValues = [];
+
+        foreach ($data as $key => $value) {
+            $setValues[] = "$key = '$value'";
+        }
+
+        $setValuesStr = implode(',', $setValues);
+
+        $this->startTransaction();
+
+        try {
+            $this->getConnect()->query("UPDATE " . $this->getInstance()::TABLE_NAME . " SET $setValuesStr WHERE id = '$id'");
+        } catch (\Exception $e) {
+            $this->rollbackTransaction();
+        }
+
+        $this->endTransaction();
+
+        return $model;
+    }
+
+    /**
      * @return array
      */
     public function list(): array
@@ -131,5 +164,52 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         return $models;
+    }
+
+    /**
+     * @param string $token
+     * @return AbstractModel|bool
+     */
+    public function getUserByToken(string $token): AbstractModel|bool
+    {
+        $data = $this->getConnect()->query("SELECT * FROM " . $this->getInstance()::TABLE_NAME . " WHERE token = '$token'")
+            ->fetchAll();
+
+        if (empty($data)) {
+            return false;
+        }
+
+        $model = new $this->instance();
+        $model->setData(array_shift($data));
+
+        if ($model->getId()) {
+            $role = $this->roleRepository->getByUserId($model->getId());
+            $model->setRole($role->getData('role'));
+        }
+
+        return $model;
+    }
+
+    /**
+     * Used for token generation.
+     *
+     * @param $length
+     * @return string
+     */
+    private function generateToken(int $length = 15): string
+    {
+        try {
+            $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            $charactersLength = strlen($characters);
+            $randomString = '';
+
+            for ($i = 0; $i < $length; $i++) {
+                $randomString .= $characters[random_int(0, $charactersLength - 1)];
+            }
+        } catch (\Exception $e) {
+            return '';
+        }
+
+        return $randomString;
     }
 }

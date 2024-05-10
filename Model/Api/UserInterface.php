@@ -52,4 +52,15 @@ interface UserInterface
      * @return void
      */
     public function setPassword(string $password): void;
+
+    /**
+     * @param string $token
+     * @return void
+     */
+    public function setToken(string $token): void;
+
+    /**
+     * @return string
+     */
+    public function getToken(): string;
 }
