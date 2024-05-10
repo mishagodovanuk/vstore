@@ -328,6 +328,7 @@ class Router
                             }
                         }
 
+                        $matched['routerId'] = $data['routerId'];
                         $this->runRouteCommand($data['callback'], $matched);
                         $this->runRouteMiddleware($data, 'after');
                         break;
