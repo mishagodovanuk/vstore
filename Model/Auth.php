@@ -67,7 +67,7 @@ class Auth
      * @param string $email
      * @return UserInterface|bool
      */
-    public function checkIfUserExists(string $email) : UserInterface | bool
+    public function checkIfUserExists(string $email): UserInterface|bool
     {
         if ($email !== '') {
             $user = $this->userRepository->getByEmail($email);
@@ -78,6 +78,22 @@ class Auth
         }
 
         return $user;
+    }
+
+    /**
+     * @param $email
+     * @param $password
+     * @return string|bool
+     */
+    public function retrieveUserToken($email, $password): string|bool
+    {
+        $user = $this->checkIfUserExists($email);
+
+        if ($user && password_verify($password, $user->getPassword())) {
+            return $user->getToken();
+        }
+
+        return false;
     }
 
     /**

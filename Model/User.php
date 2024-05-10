@@ -45,6 +45,11 @@ class User extends AbstractModel implements UserInterface
     /**
      * @var string
      */
+    public string $token;
+
+    /**
+     * @var string
+     */
     public string $role;
 
     /**
@@ -113,6 +118,23 @@ class User extends AbstractModel implements UserInterface
     public function setPassword(string $password): void
     {
         $this->setData('password', $password);
+    }
+
+    /**
+     * @param string $token
+     * @return void
+     */
+    public function setToken(string $token): void
+    {
+        $this->setData('token', $token);
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->getData('token');
     }
 
     /**
