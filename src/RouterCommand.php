@@ -119,6 +119,7 @@ class RouterCommand
      * @param array $middlewares
      *
      * @return RouterCommand|null
+     * @throws ReflectionException
      */
     public static function getInstance(
         string   $baseFolder,
@@ -149,7 +150,7 @@ class RouterCommand
      *
      * @param $command
      * @param $routerId
-     * @return mixed|void
+     * @return bool|void|null
      * @throws ReflectionException
      */
     public function beforeAfter($command, $routerId = null)
