@@ -101,7 +101,7 @@ class Vehicle extends Controller
 
         return $this->response->setContent(
             $this->layoutProccessor
-                ->setTitle("Vehicle view")
+                ->setTitle('Vehicle view')
                 ->setData('item', $item)
                 ->render('vehicle/view')
         );

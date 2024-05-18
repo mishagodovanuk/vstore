@@ -7,12 +7,12 @@ use Model\User;
 use Model\UserRepository;
 
 /**
- *
+ * Class UserCollection
  */
 class UserCollection extends AbstractCollection
 {
     /**
-     *
+     * UserCollection constructor.
      */
     public function __construct()
     {
