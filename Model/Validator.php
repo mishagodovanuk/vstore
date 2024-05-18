@@ -3,7 +3,7 @@
 namespace Model;
 
 /**
- *
+ * Class Validator.
  */
 class Validator
 {
