@@ -4,6 +4,7 @@ namespace Vstore\Router;
 
 use Closure;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use ReflectionMethod;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,6 +119,7 @@ class Router
      */
     public function __construct(array $params = [], Request $request = null, Response $response = null)
     {
+        //TODO fix this session declaration
         $this->session = new Session();
 
         if (!$this->session->isStarted()) {
@@ -150,7 +152,6 @@ class Router
         };
 
         $this->permission = new \Vstore\Router\RouterPermission();
-
         $this->setPaths($params);
         $this->loadCache();
     }
@@ -162,7 +163,7 @@ class Router
      * @param $method
      * @param $params
      *
-     * @return mixed
+     * @return bool|Router
      * @throws
      */
     public function __call($method, $params)
@@ -259,7 +260,7 @@ class Router
      * @return mixed
      * @throws
      */
-    public function pattern(array|string $pattern, string $attr = null)
+    public function pattern(array|string $pattern, string $attr = null): mixed
     {
         if (is_array($pattern)) {
             foreach ($pattern as $key => $value) {
@@ -284,7 +285,7 @@ class Router
      * @return void
      * @throws
      */
-    public function run()
+    public function run(): void
     {
         try {
             $uri = $this->getRequestUri();
@@ -299,7 +300,6 @@ class Router
                 if (!$this->request->validMethod($data['method'], $method)) {
                     continue;
                 }
-
                 // Direct Route Match
                 if ($route === $uri) {
                     $foundRoute = true;
@@ -307,16 +307,13 @@ class Router
                     $this->runRouteCommand($data['callback'], $data);
                     $this->runRouteMiddleware($data, 'after');
                     break;
-
                     // Parameter Route Match
                 } elseif (strstr($route, ':') !== false) {
                     $route = str_replace($searches, $replaces, $route);
 
                     if (preg_match('#^' . $route . '$#', $uri, $matched)) {
                         $foundRoute = true;
-
                         $this->runRouteMiddleware($data, 'before');
-
                         array_shift($matched);
                         $matched = array_map(function ($value) {
                             return trim(urldecode($value));
@@ -379,9 +376,7 @@ class Router
         $group['after'] = $this->calculateMiddleware($options['after'] ?? []);
 
         array_push($this->groups, $group);
-
         call_user_func_array($callback, [$this]);
-
         $this->endGroup();
 
         return true;
@@ -439,6 +434,7 @@ class Router
                         if (!in_array($typeHint, ['int', 'float', 'string', 'bool']) && $typeHint !== null) {
                             continue;
                         }
+
                         $pattern = isset($this->patterns[":{$typeHint}"]) ? ":{$typeHint}" : ":any";
                         $endpoints[] = $param->isOptional() ? "{$pattern}?" : $pattern;
                     }
@@ -484,7 +480,7 @@ class Router
      *
      * @return void
      */
-    public function getList(): void
+    #[NoReturn] public function getList(): void
     {
         $routes = var_export($this->getRoutes(), true);
         die("<pre>{$routes}</pre>");
@@ -612,7 +608,7 @@ class Router
      *
      * @throws Exception
      */
-    protected function exception(string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR)
+    protected function exception(string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): void
     {
         throw new RouterException($message, $statusCode);
     }
@@ -621,6 +617,7 @@ class Router
      * RouterCommand class
      *
      * @return RouterCommand
+     * @throws \ReflectionException
      */
     protected function routerCommand(): RouterCommand
     {
@@ -691,7 +688,7 @@ class Router
      * @return RouterException|string
      * @throws Exception
      */
-    protected function resolveClassName(string $controller)
+    protected function resolveClassName(string $controller): RouterException|string
     {
         $controller = str_replace([$this->namespaces['controllers'], '\\', '.'], ['', '/', '/'], $controller);
         $controller = trim(
@@ -745,7 +742,7 @@ class Router
      *
      * @return void
      */
-    protected function addRoute(string $uri, string $method, $callback, ?array $options = null)
+    protected function addRoute(string $uri, string $method, $callback, ?array $options = null): void
     {
         $groupUri = '';
         $groupStack = [];
