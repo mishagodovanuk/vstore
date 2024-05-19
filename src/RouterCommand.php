@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Vstore\Router\RouterPermission;
 
 /**
- *
+ * Class RouterCommand.
  */
 class RouterCommand
 {
@@ -168,6 +168,7 @@ class RouterCommand
         } elseif (is_string($command)) {
             $middleware = explode(':', $command);
             $params = [];
+
             if (count($middleware) > 1) {
                 $params = explode(',', $middleware[1]);
             }
@@ -184,6 +185,7 @@ class RouterCommand
                         $info
                     );
                 }
+
                 return $response;
             }
             $info['routerId'] = $routerId;
@@ -216,7 +218,6 @@ class RouterCommand
             }
 
             $class = str_replace([$info['namespace'], '\\', '.'], ['', '/', '/'], $class);
-
             $controller = $this->resolveClass($class, $info['path'], $info['namespace'], $params['routerId']);
 
             if (!$invokable && !method_exists($controller, $method)) {
@@ -344,7 +345,6 @@ class RouterCommand
     protected function runMiddleware(string $command, string $middleware, array $params, array $info)
     {
         $middlewareMethod = 'handle'; // For now, it's constant.
-
         $controller = $this->resolveClass($middleware, $info['path'], $info['namespace'], $info['routerId']);
 
         if (in_array($command, $this->markedMiddlewares)) {
@@ -420,7 +420,7 @@ class RouterCommand
      *
      * @throws Exception
      */
-    protected function exception(string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR)
+    protected function exception(string $message = '', int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR): void
     {
         throw new RouterException($message, $statusCode);
     }
